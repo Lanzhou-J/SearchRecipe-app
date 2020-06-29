@@ -1,26 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Search from './components/Search'
+import Recipes from './components/Recipes'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component{
+
+  state = {recipes:[],baseUri:""};
+
+   searchRecipes = async(search) => {
+    console.log("searchRecipes")
+    const response = await fetch(`https://api.spoonacular.com/recipes/search?query=${search.food}&apiKey=d3447c6fd59a47a8a9321537f01e8058`)
+
+    const data = await response.json()
+    console.log(data.baseUri)
+
+    this.setState({recipes: data.results, baseUri: data.baseUri})
+  }
+
+  render(){
+    return (
+      <div className="App">
+        <h1>Recipes app</h1>
+        <Search search={this.searchRecipes}/>
+        <Recipes recipes={this.state.recipes} baseUri={this.state.baseUri}/>
+      </div>
+    );
+  }
+
 }
 
 export default App;
